@@ -2,8 +2,7 @@
 from functools import reduce
 import math
 import json
-import csv
-import pandas
+import pandas as pd
 
 
 class genaratemark:
@@ -35,6 +34,16 @@ class genaratemark:
         x1.write(dun + ","+'\n')
         x1.close()
 
+    def getgrade(self):
+        data_s = {
+            "name": [self.name],
+            "fullmark": [self.fullmark],
+            "avarage": [self.avarage]
+        }
+        dataset = pd.DataFrame(data_s)
+        print(dataset)
+        dataset.to_csv("result.csv", sep='\t', index=False)
+
 
 def getdata():
     while True:
@@ -65,6 +74,7 @@ def getdata():
         stud = genaratemark(name, sub_arr, mark_arr, subject)
         stud.allmark()
         stud.save()
+        stud.getgrade()
 
 
 getdata()
