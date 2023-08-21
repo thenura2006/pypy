@@ -1,8 +1,8 @@
 
 from functools import reduce
 import math
-import json
-import pandas as pd
+from csv import writer
+import os
 
 
 class genaratemark:
@@ -13,6 +13,7 @@ class genaratemark:
         self.list = lists
         self.fullmark = 0
         self.avarage = 0
+        self.files = "result.csv"
 
     def allmark(self):
         mark_add = reduce(lambda x, y: x+y, self.mark)
@@ -22,27 +23,29 @@ class genaratemark:
         self.avarage = avarage
         print("avarage : ", avarage)
 
-    def save(self):
-        data = {
-            "name": self.name,
-            "result": self.list,
-            "fullmark": self.fullmark,
-            "avarage": self.avarage
-        }
-        dun = json.dumps(data)
-        x1 = open("result.txt", "a", encoding="utf-8")
-        x1.write(dun + ","+'\n')
-        x1.close()
+    def create(self):
+        self.subject.insert(0, self.name)
+        print(self.subject)
 
-    def getgrade(self):
-        data_s = {
-            "name": [self.name],
-            "fullmark": [self.fullmark],
-            "avarage": [self.avarage]
-        }
-        dataset = pd.DataFrame(data_s)
-        print(dataset)
-        dataset.to_csv("result.csv", sep='\t', index=False)
+    def find(self):
+        cw = os.getcwd()
+        li = os.listdir(cw)
+        # files = "result.csv"
+        if self.files not in li:
+            header1 = ["name", "fullmark", "avarage"]
+            header1.extend(self.subject)
+            with open(self.files, "a") as f_ob:
+                wrr = writer(f_ob)
+                wrr.writerow(header1)
+            print("sucess...")
+
+    def save(self):
+        data = [self.name, self.fullmark, self.avarage]
+        data.extend(self.mark)
+        with open(self.files, "a") as f_ob2:
+            wrr2 = writer(f_ob2)
+            wrr2.writerow(data)
+            print("sucessfuly added ")
 
 
 def getdata():
@@ -73,8 +76,8 @@ def getdata():
         mark_arr = list(subject.values())
         stud = genaratemark(name, sub_arr, mark_arr, subject)
         stud.allmark()
+        stud.find()
         stud.save()
-        stud.getgrade()
 
 
 getdata()
